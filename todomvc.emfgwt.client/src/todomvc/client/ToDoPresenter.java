@@ -30,6 +30,8 @@ public class ToDoPresenter {
 	 */
 	public interface View {
 
+		CellView getCell();
+
 		/**
 		 * Gets the text that the user has input for the creation of new tasks.
 		 */
@@ -60,6 +62,16 @@ public class ToDoPresenter {
 		 */
 		void setRouting(ToDoRouting routing);
 	}
+	
+	/**
+	 * The interface that the cell view for this presenter must implement. 
+	 */
+	public interface CellView {
+		/**
+		 * Adds the handler to the events raised by the view.
+		 */
+		void addhandler(CellViewEventHandler handler);
+	}
 
 	/**
 	 * The interface that handles interactions from the view.
@@ -81,6 +93,18 @@ public class ToDoPresenter {
 		 */
 		void markAllCompleted(boolean completed);
 	}
+	
+	/**
+	 * The interface that handles interactions from the cell view. 
+	 *
+	 */
+	public interface CellViewEventHandler {
+		/**
+		 * Invoked when a user deletes a task.
+		 */
+		void deleteTask(Item editingItem);
+		
+	}
 
 	/**
 	 * Handler for view events, defers to private presenter methods.
@@ -101,6 +125,13 @@ public class ToDoPresenter {
 			ToDoPresenter.this.markAllCompleted(completed);
 		}
 	};
+	
+	private final CellViewEventHandler cellViewHandler = new CellViewEventHandler() {
+		@Override
+		public void deleteTask(Item editingItem) {
+			ToDoPresenter.this.deleteTask(editingItem);
+		}
+	}; 
 
 	private Todo todos;
 
@@ -126,6 +157,7 @@ public class ToDoPresenter {
 				routing = parseRoutingToken(initialToken);
 
 				view.addhandler(viewHandler);
+				view.getCell().addhandler(cellViewHandler);
 				view.setDataProvider(filteredTodos);
 				view.setRouting(routing);
 

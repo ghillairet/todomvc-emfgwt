@@ -1,5 +1,6 @@
 package todomvc.client;
 
+import todomvc.client.ToDoPresenter.CellView;
 import todomvc.client.ToDoPresenter.ViewEventHandler;
 import todomvc.model.todo.Item;
 
@@ -69,8 +70,10 @@ public class ToDoView extends Composite implements ToDoPresenter.View {
 	@UiField
 	InputElement toggleAll;
 
+	ToDoCell cell = new ToDoCell();
+
 	@UiField(provided = true)
-	CellList<Item> todoTable = new CellList<Item>(new ToDoCell());
+	CellList<Item> todoTable = new CellList<Item>(cell);
 
 	public ToDoView() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -87,6 +90,11 @@ public class ToDoView extends Composite implements ToDoPresenter.View {
 		todoStatsContainer.setId("footer");
 		toggleAll.setId("toggle-all");
 	}
+	
+	@Override
+	public CellView getCell() {
+		return cell;
+	}
 
 	@Override
 	public String getTaskText() {
@@ -95,7 +103,6 @@ public class ToDoView extends Composite implements ToDoPresenter.View {
 
 	@Override
 	public void addhandler(final ViewEventHandler handler) {
-
 		// wire-up the events from the UI to the presenter.
 
 		// The TodoMVC project template has a markup / style that is not compatible with the markup
