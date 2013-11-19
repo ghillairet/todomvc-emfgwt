@@ -2,8 +2,9 @@ package todomvc.client;
 
 import java.util.Date;
 
+import todomvc.client.ToDoPresenter.CellView;
+import todomvc.client.ToDoPresenter.CellViewEventHandler;
 import todomvc.model.todo.Item;
-import todomvc.model.todo.Todo;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -27,7 +28,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
  * @author ceberhardt
  *
  */
-public class ToDoCell extends AbstractCell<Item> {
+public class ToDoCell extends AbstractCell<Item> implements CellView {
 
 	/**
 	 * The HTML templates used to render the cell.
@@ -71,6 +72,8 @@ public class ToDoCell extends AbstractCell<Item> {
 	 * A flag that indicates that we are starting to edit the cell
 	 */
 	private boolean beginningEdit = false;
+
+	private CellViewEventHandler handler;
 
 	public ToDoCell() {
 		super("click", "keyup", "blur", "dblclick");
@@ -167,7 +170,7 @@ public class ToDoCell extends AbstractCell<Item> {
 
 				} else if (tagName.equals("BUTTON")) {
 					// if the delete anchor was clicked - delete the item
-					((Todo)value.eContainer()).getTasks().remove(value);
+					 handler.deleteTask(value);
 				}
 			}
 		}
@@ -226,6 +229,11 @@ public class ToDoCell extends AbstractCell<Item> {
 	 */
 	private DivElement getViewRootElement(Element parent) {
 		return parent.getFirstChild().<DivElement> cast();
+	}
+
+	@Override
+	public void addhandler(CellViewEventHandler handler) {
+		this.handler = handler;
 	}
 
 }
